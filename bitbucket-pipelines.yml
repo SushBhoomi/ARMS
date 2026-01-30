@@ -1,0 +1,20 @@
+image: mcr.microsoft.com/dotnet/sdk:7.0
+
+pipelines:
+  default:
+    - step:
+        name: Build App
+        caches:
+          - dotnetcore
+        script:
+          - dotnet restore ARMS/ARMS.WebAPI/ARMS.WebAPI.csproj
+          - dotnet build ARMS/ARMS.WebAPI/ARMS.WebAPI.csproj --no-restore --configuration Release
+          - dotnet publish ARMS/ARMS.WebAPI/ARMS.WebAPI.csproj --no-restore --configuration Release -o release/
+        artifacts:
+          - release/**
+    - step:
+        name: Deploy to Production
+        deployment: production
+        script:
+          - mkdir -p "E:\Tommorrow\YBL_ARMS"
+          - cp -r release/* "E:\Tommorrow\YBL_ARMS"
